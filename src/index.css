@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* LIGHT MODE */
+    --bg-deepest: #f9fafb;
+    --bg-deep: #f3f4f6;
+    --bg-surface: #e5e7eb;
+    --bg-card: rgba(255, 255, 255, 0.95);
+    --bg-card-hover: rgba(255, 255, 255, 1);
+    --bg-input: rgba(255, 255, 255, 0.8);
+
+    --text-primary: #111827;
+    --text-secondary: #374151;
+    --text-muted: #6b7280;
+
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-medium: rgba(0, 0, 0, 0.15);
+    --border-accent: rgba(2, 132, 199, 0.25);
+
+    --neon-cyan: #0284c7;
+    --neon-cyan-dim: rgba(2, 132, 199, 0.1);
+    --neon-green: #059669;
+    --neon-green-dim: rgba(5, 150, 105, 0.1);
+    --neon-magenta: #e11d48;
+    --neon-magenta-dim: rgba(225, 29, 72, 0.1);
+    --neon-purple: #7c3aed;
+    --neon-orange: #ea580c;
+    --neon-gold: #d97706;
+  }
+
+  .dark {
+    /* DARK MODE */
+    --bg-deepest: #050508;
+    --bg-deep: #0a0a12;
+    --bg-surface: #0f0f1a;
+    --bg-card: rgba(15, 15, 30, 0.6);
+    --bg-card-hover: rgba(20, 20, 40, 0.8);
+    --bg-input: rgba(10, 10, 25, 0.8);
+
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888a8;
+    --text-muted: #55556a;
+
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-medium: rgba(255, 255, 255, 0.1);
+    --border-accent: rgba(0, 240, 255, 0.3);
+
+    --neon-cyan: #00f0ff;
+    --neon-cyan-dim: rgba(0, 240, 255, 0.15);
+    --neon-green: #00ff88;
+    --neon-green-dim: rgba(0, 255, 136, 0.15);
+    --neon-magenta: #ff006e;
+    --neon-magenta-dim: rgba(255, 0, 110, 0.15);
+    --neon-purple: #a855f7;
+    --neon-orange: #ff9f1c;
+    --neon-gold: #ffd700;
+  }
+
+  body {
+    @apply bg-bg-deepest text-text-primary font-sans antialiased;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(var(--border-subtle) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -30%; left: -10%;
+    width: 60%; height: 60%;
+    background: radial-gradient(ellipse, var(--neon-cyan-dim) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #root {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+
+  /* Remove spin buttons from number inputs */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}

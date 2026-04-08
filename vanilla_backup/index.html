@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cryptography — Security Workbench</title>
+  <meta name="description" content="An interactive cryptography workbench for university students. Solve and visualize 43 problems across Classical Ciphers, Number Theory, DES, AES, and Public Key Cryptography." />
+  <link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+
+<!-- Mobile Header -->
+<div class="mobile-header">
+  <button class="hamburger" id="menu-toggle" aria-label="Toggle menu">☰</button>
+  <span style="margin-left:12px; font-weight:700; font-size:15px;">Cryptography</span>
+</div>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div id="app">
+  <!-- ═══════════════ Sidebar ═══════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo" data-nav="home">
+        <div class="logo-icon">🔐</div>
+        <div class="logo-text">
+          <span class="title">Cryptography</span>
+          <span class="subtitle">Security Workbench</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item active" data-nav="home" id="nav-home">
+        <span class="nav-icon">🏠</span>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-section-label">Modules</div>
+      <a class="nav-item" data-nav="classical" id="nav-classical">
+        <span class="nav-icon">🏛️</span>
+        <span>Classical Ciphers</span>
+        <span class="nav-badge">6</span>
+      </a>
+      <a class="nav-item" data-nav="numbertheory" id="nav-numbertheory">
+        <span class="nav-icon">🔢</span>
+        <span>Number Theory</span>
+        <span class="nav-badge">10</span>
+      </a>
+      <a class="nav-item" data-nav="des" id="nav-des">
+        <span class="nav-icon">🧱</span>
+        <span>DES Encryption</span>
+        <span class="nav-badge">11</span>
+      </a>
+      <a class="nav-item" data-nav="aes" id="nav-aes">
+        <span class="nav-icon">💎</span>
+        <span>AES Encryption</span>
+        <span class="nav-badge">11</span>
+      </a>
+      <a class="nav-item" data-nav="publickey" id="nav-publickey">
+        <span class="nav-icon">🔑</span>
+        <span>Public Key Crypto</span>
+        <span class="nav-badge">5</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      ATTT Course — University of Vietnam<br>
+      Built with ❤️ for learning
+    </div>
+  </aside>
+
+  <!-- ═══════════════ Main Content ═══════════════ -->
+  <main class="main-content">
+
+    <!-- ─── HOME / DASHBOARD ─── -->
+    <section class="section active" id="section-home">
+      <div class="hero">
+        <h1>Cryptography<br>Security Workbench</h1>
+        <p class="hero-subtitle">
+          An interactive laboratory for exploring, computing, and visualizing
+          cryptographic algorithms — from Caesar to DSA.
+        </p>
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-number">43</div>
+            <div class="stat-label">Problems</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">5</div>
+            <div class="stat-label">Modules</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">Custom Inputs</div>
+          </div>
+        </div>
+
+        <div class="topic-cards">
+          <div class="topic-card" data-topic="classical" data-nav="classical">
+            <div class="topic-icon">🏛️</div>
+            <div class="topic-title">Classical Ciphers</div>
+            <div class="topic-desc">Caesar, Vigenère (Repeating & Autokey), Monoalphabetic Substitution, Playfair Matrix, and Permutation Cipher.</div>
+            <span class="topic-count">6 problems</span>
+          </div>
+          <div class="topic-card" data-topic="numbertheory" data-nav="numbertheory">
+            <div class="topic-icon">🔢</div>
+            <div class="topic-title">Number Theory & Modular Arithmetic</div>
+            <div class="topic-desc">Modular exponentiation, Extended Euclidean, Fermat, Euler, Chinese Remainder Theorem, Primitive Roots, Discrete Log.</div>
+            <span class="topic-count">10 problems</span>
+          </div>
+          <div class="topic-card" data-topic="des" data-nav="des">
+            <div class="topic-icon">🧱</div>
+            <div class="topic-title">DES Encryption</div>
+            <div class="topic-desc">Full 16-round DES with step-by-step key generation, initial permutation, S-Boxes, and final permutation.</div>
+            <span class="topic-count">11 sub-problems</span>
+          </div>
+          <div class="topic-card" data-topic="aes" data-nav="aes">
+            <div class="topic-icon">💎</div>
+            <div class="topic-title">AES Encryption</div>
+            <div class="topic-desc">Full 10-round AES-128 with SubBytes, ShiftRows, MixColumns, AddRoundKey, and key expansion visualization.</div>
+            <span class="topic-count">11 sub-problems</span>
+          </div>
+          <div class="topic-card" data-topic="publickey" data-nav="publickey">
+            <div class="topic-icon">🔑</div>
+            <div class="topic-title">Public Key Cryptography</div>
+            <div class="topic-desc">Diffie-Hellman key exchange, RSA encryption & signing, ElGamal encryption, and DSA digital signatures.</div>
+            <span class="topic-count">5 problems</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Concepts Section -->
+      <div class="concepts-section">
+        <h2>Core Concepts</h2>
+        <div class="concepts-grid">
+          <div class="concept-card">
+            <h4>🔄 Classical vs. Modern</h4>
+            <p>Classical ciphers use simple substitution and permutation. Modern cryptography uses complex mathematical functions with provable security properties.</p>
+          </div>
+          <div class="concept-card">
+            <h4>🛡️ Absolute vs. Computational Security</h4>
+            <p>Absolute security (like OTP) is unbreakable regardless of computing power. Computational security means decryption is infeasible given realistic constraints.</p>
+          </div>
+          <div class="concept-card">
+            <h4>⚔️ Brute-Force vs. Cryptanalysis</h4>
+            <p>Brute-force exhaustively tries all keys. Cryptanalysis exploits mathematical weaknesses in the cipher to reduce the search space dramatically.</p>
+          </div>
+          <div class="concept-card">
+            <h4>🔑 Symmetric vs. Asymmetric</h4>
+            <p>Symmetric: same key encrypts and decrypts (DES, AES). Asymmetric: public key encrypts, private key decrypts (RSA, ElGamal, DSA).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CLASSICAL CIPHERS ─── -->
+    <section class="section" id="section-classical">
+      <div class="section-header">
+        <div class="breadcrumb">
+          <span>Cryptography</span><span class="sep">›</span><span>Modules</span><span class="sep">›</span><span style="color:var(--neon-orange)">Classical Ciphers</span>
+        </div>
+        <h1>Classical Ciphers</h1>
+        <p class="section-description">
+          Explore the foundational encryption techniques: substitution and transposition ciphers that laid the groundwork for modern cryptography.
+        </p>
+      </div>
+      <div id="classical-content">
+        <!-- Populated by classical.js -->
+        <div style="text-align:center; padding:60px 0; color: var(--text-muted);">
+          <div class="spinner" style="margin:0 auto 16px;"></div>
+          Loading module...
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── NUMBER THEORY ─── -->
+    <section class="section" id="section-numbertheory">
+      <div class="section-header">
+        <div class="breadcrumb">
+          <span>Cryptography</span><span class="sep">›</span><span>Modules</span><span class="sep">›</span><span style="color:var(--neon-green)">Number Theory</span>
+        </div>
+        <h1>Number Theory & Modular Arithmetic</h1>
+        <p class="section-description">
+          The mathematical backbone of modern cryptography. Master modular exponentiation, Euler's theorem, CRT, and discrete logarithms.
+        </p>
+      </div>
+      <div id="numbertheory-content">
+        <div style="text-align:center; padding:60px 0; color: var(--text-muted);">
+          <div class="spinner" style="margin:0 auto 16px;"></div>
+          Loading module...
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── DES ─── -->
+    <section class="section" id="section-des">
+      <div class="section-header">
+        <div class="breadcrumb">
+          <span>Cryptography</span><span class="sep">›</span><span>Modules</span><span class="sep">›</span><span style="color:var(--neon-magenta)">DES Encryption</span>
+        </div>
+        <h1>DES Encryption</h1>
+        <p class="section-description">
+          The Data Encryption Standard — a 16-round Feistel cipher. Explore every round, S-Box substitution, and key schedule step-by-step.
+        </p>
+      </div>
+      <div id="des-content">
+        <div style="text-align:center; padding:60px 0; color: var(--text-muted);">
+          <div class="spinner" style="margin:0 auto 16px;"></div>
+          Loading module...
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── AES ─── -->
+    <section class="section" id="section-aes">
+      <div class="section-header">
+        <div class="breadcrumb">
+          <span>Cryptography</span><span class="sep">›</span><span>Modules</span><span class="sep">›</span><span style="color:var(--neon-purple)">AES Encryption</span>
+        </div>
+        <h1>AES Encryption</h1>
+        <p class="section-description">
+          The Advanced Encryption Standard (AES-128) — 10 rounds of SubBytes, ShiftRows, MixColumns, and AddRoundKey with full key expansion.
+        </p>
+      </div>
+      <div id="aes-content">
+        <div style="text-align:center; padding:60px 0; color: var(--text-muted);">
+          <div class="spinner" style="margin:0 auto 16px;"></div>
+          Loading module...
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PUBLIC KEY CRYPTO ─── -->
+    <section class="section" id="section-publickey">
+      <div class="section-header">
+        <div class="breadcrumb">
+          <span>Cryptography</span><span class="sep">›</span><span>Modules</span><span class="sep">›</span><span style="color:var(--neon-cyan)">Public Key Crypto</span>
+        </div>
+        <h1>Public Key Cryptography</h1>
+        <p class="section-description">
+          Asymmetric cryptography: key exchange (Diffie-Hellman), encryption (RSA, ElGamal), and digital signatures (DSA).
+        </p>
+      </div>
+      <div id="publickey-content">
+        <div style="text-align:center; padding:60px 0; color: var(--text-muted);">
+          <div class="spinner" style="margin:0 auto 16px;"></div>
+          Loading module...
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
+

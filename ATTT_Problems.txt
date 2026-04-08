@@ -1,0 +1,212 @@
+YÊU CẦU CHUNG
+1. Hiểu được khái niệm Mã hóa cổ điển và Mật mã hiện đại
+2. Hiểu được khái niệm An toàn tuyệt đối và An toàn tính toán
+3. Hiểu được khái niệm tấn công vét cạn (Brute-force) và Phân tích mã (Cryptanalysis)
+4. Hiểu được khái niệm Mô hình mã hóa đối xứng và Mô hình mã hóa không đối xứng
+BÀI TẬP
+1. MẬT MÃ CAESAR
+Input: M = SAVEFORARAINYDAY
+Key: K = 25
+Tìm Output: C =
+2. MẬT MÃ VIGENERE – LẶP KHÓA
+Input: M = WHENINROMEDO
+Key: K = THETRU
+Tìm Output: C =
+3. MẬT MÃ VIGENERE – AUTOKEY
+Input: M = BARKINGDOGSS
+Key: K = LIKEFA
+Tìm Output: C =
+4. MÃ HÓA CHỮ ĐƠN
+Input: M = PENNYWISEPOUNDFO
+Key: K = KGOXPMUHCAYTJQWZRIVESFLDNB
+Tìm Output: C =
+5. MẬT MÃ MA TRẬN KHÓA PLAYFAIR
+Input: M = STILLWATERSR
+Key: K = SAVEFORA
+Tìm Output: C =
+6. MẬT MÃ HOÁN VỊ
+Input: M = TIMEISMONEYTIMEISM
+Key: K = 5
+Tìm Output: C =
+
+
+1. TÍNH LŨY THỪA MODULO 𝒃 = 𝒂𝒎 𝒎𝒐𝒅 𝒏 BẰNG CÁCH HẠ BẬC LŨY THỪA
+Input: a = 499; m = 6337; n = 6337
+Tìm Output: b =
+2. TÌM NGHỊCH ĐẢO 𝒙 = 𝒂−𝟏 𝒎𝒐𝒅 𝒏 THEO ĐỊNH NGHĨA VÀ THUẬT TOÁN EUCLID – MỞ
+RỘNG
+Input: a = 2705; n = 6577
+Tìm Output: x =
+3. SỬ DỤNG ĐỊNH LÝ FERMAT ĐỂ TÍNH LŨY THỪA MODULO 𝒃 = 𝒂𝒎 𝒎𝒐𝒅 𝒏
+Input: a = 281; m = 764; n = 6967
+Tìm Output: b =
+4. TÍNH GIÁ TRỊ HÀM EULER (n).
+Input: n = 2863
+Tìm Output: (n) =
+5. SỬ DỤNG ĐỊNH LÝ EULER ĐỂ TÍNH LŨY THỪA MODULO 𝒃 = 𝒂𝒎 𝒎𝒐𝒅 𝒏
+Input: a = 27; m = 2201; n = 5400
+Tìm Output: b =
+6. SỬ DỤNG ĐỊNH LÝ SỐ DƯ TRUNG HOA ĐỂ TÍNH LŨY THỪA modulo 𝒃 = 𝒂𝒌 𝒎𝒐𝒅 𝒏
+Input: a = 101; k = 76; n = 49913
+Tìm Output: b =
+7. SỬ DỤNG ĐỊNH LÝ SỐ DƯ TRUNG HOA ĐỂ GIẢI HỆ PHƯƠNG TRÌNH MODULO.
+{
+𝒙 𝒎𝒐𝒅 𝒎𝟏 = 𝒂𝟏
+𝒙 𝒎𝒐𝒅 𝒎𝟐 = 𝒂𝟐
+𝒙 𝒎𝒐𝒅 𝒎𝟑 = 𝒂𝟑
+Input: m1 = 11; m2 = 13; m3 = 17; a1 = 6; a2 = 2; a3 = 4;
+Tìm Output: x =
+8. KIỂM TRA SỐ NGUYÊN A CÓ LÀ MỘT CĂN NGUYÊN THỦY CỦA SỐ NGUYÊN N?
+Input: a = 11; n = 293
+Tìm Output: a có là căn nguyên thủy của n không?
+9. TÌM LOGARITHM RỜI RẠC CỦA SỐ b VỚI CƠ SỐ 𝒂 (𝒎𝒐𝒅 𝒏), 𝒌 = 𝐥𝐨𝐠𝒂 𝒃 (𝒎𝒐𝒅 𝒏).
+Input: a = 3; b = 8; n = 19
+Tìm Output: k =
+10. TÍNH CÁC BIỂU THỨC MODULO CƠ BẢN
+𝑨𝟏 = (𝒂𝒙 + 𝒃𝒚) 𝒎𝒐𝒅 𝒏
+𝑨𝟐 = (𝒂𝒙 − 𝒃𝒚) 𝒎𝒐𝒅 𝒏
+𝑨𝟑 = (𝒂𝒙 ∗ 𝒃𝒚) 𝒎𝒐𝒅 𝒏
+𝑨𝟒 = (𝒃𝒚)−𝟏 𝒎𝒐𝒅 𝒏
+𝑨𝟓 = (𝒂𝒙/𝒃𝒚) 𝒎𝒐𝒅 𝒏
+Input: a = 83; b = 17; x = 354; y = 314; n = 241
+Tìm Output: A1 = ; A2 = ; A3 = ; A4 = ; A5 = ?
+
+BÀI TẬP MÃ HÓA DES
+INPUT: K (là input bài 1) = 3FF81CDA5F417784;
+M (là input bài 4) = FF1C9CA3596B7D48;
+OUTPUT: Tìm C (kết quả bài 11) = C727541BBA49D95D
+HÃY THỰC HIỆN CÁC BÀI TOÁN CHI TIẾT TỪ Bài 1 đến Bài 9, và Bài 11
+(XEM THÊM YÊU CẦU PHẦN THỰC HÀNH)
+PHẦN 1: SINH KHÓA Ki từ khóa K (input)
+1. Tính hoán vị PC1 đối với khóa K:
+Input: K = (input) = , PC1 (xem tài liệu mục 3.2 DES)
+Output: C0 = , D0 =
+2. Tính các giá trị dịch vòng Ci, Di:
+Input: C0 = , D0 = (kết quả bài 1), si (xem tài liệu mục 3.2 DES)
+Output: Ci = , Di =
+3. Tính khóa Ki cho vòng lặp thứ i
+Input: Ci = , Di = (kết quả bài 2), PC2 (xem tài liệu mục 3.2 DES)
+Output: Ki = .
+PHẦN 2: MÃ HÓA
+4. Tính hoán vị IP đối với bản tin M
+Input: M = (input) = , IP (xem tài liệu mục 3.2 DES)
+Output: L0 = , R0 =
+========== CHI TIẾT VÒNG LẶP THỨ NHẤT ==============
+5. Tính hàm mở rộng nửa phải E[R0]
+Input: R0 = (kết quả bài 4), E (xem tài liệu mục 3.2 DES)
+Output: ER0 =
+6. Thực hiên XOR ER0 với khóa K1
+Input: ER0 (kết quả bài 5) , K1 (kết quả bài 3)
+Output: A =
+7. Thực hiện phép thế S-box đối với B
+Input: A (kết quả bài 6), 8 bảng Si, i = 1, 2, ..., 8; (xem tài liệu mục 3.2 DES)
+Output: B = S(A) =
+8. Thực hiện hoán vị P đối với SB
+Input: B (kết quả bài 7), P (xem tài liệu mục 3.2 DES)
+Output: F =
+========= THỰC HIỆN VÒNG LẶP THỨ NHẤT =================
+9. Thực hiện vòng lặp thứ nhất
+Input: L0 = ; R0 = , (kết quả bài 4), F (kết quả bài 8)
+Output: L1 = R0 = ; R1 = L0  F =
+========= THỰC HIỆN VÒNG LẶP THỨ i, i = 2, 3, ..., 16 ==========
+10. Thực hiện vòng lặp thứ i, i = 2, 3, ..., 16
+Input: Li-1 = ; Ri-1 = , (kết quả bài 9 hoặc bài 10)
+Output: Li = Ri-1 = ; Ri = Li-1  f(Ri-1,Ki) =
+========= KẾT THÚC VÒNG LẶP THỨ 16 ======================
+11. Thực hiện hoán vị cuối cùng IP-1
+Input: L16 = ; R16 = , (kết quả bài 10); IP-1 (xem tài liệu mục 3.2 DES)
+Output: C = ;(bản mã cần tìm)
+============ KẾT QUẢ MÃ HÓA ========================
+
+
+
+AES
+PHẦN 1: SINH 10 KHÓA Ki từ khóa K (input), i = 1, 2, ..., 10. (Mục 5.4)
+1. Chia khóa K (128 bit) thành 4 word (32 bit)
+Input: K (input) = CFD61D489E7C48BC46C9F875C1F04E1B,
+Output: w0 = , w1 = , w2 = , w3 = ,
+2. Dịch vòng trái 1 byte đối với w3 (32 bit)
+Input: w3 (kết quả bài 1) =
+Output: rw = RotWord(w3) =
+3. Thay thế từng byte trong rw bằng bảng S-box SubWord
+Input: rw (kết quả bài 2) = ; Sbox (tài liệu mục 5.3, Table 5.2, trang 157)
+Output: sw = SubWord(rw) =
+4. sw XORbit với Rcon[j]
+Input: sw (kết quả bài 3) = ; RC[i] (xem tài liệu mục 5.4 Key Expansion)
+Output: xcsw = XorRcon(sw, RC[i]) =
+5. Tính khóa K1 = (w4, w5, w6, w7)
+Input: xcsw (kết quả bài 4) = ; w0, w1, w2, w3 (kết quả bài 1);
+Output: w4 = XORbit(xcsw, w0) =
+w5 = XORbit(w4, w1) =
+w6 = XORbit(w5, w2) =
+w7 = XORbit(w6, w3) =
+LẶP LẠI từ Bài 2 đến Bài 5 để tạo các khóa K2, K3, ..., K10
+PHẦN 2: MÃ HÓA (mục 5.2, sơ đồ hình 5.3)
+6. Tính kết quả AddRoundKey (tài liệu mục 5.3, trang 165)
+Input: M (input) = 18DC9095F9149EDB7323F20E4E462D92,
+K (input) = CFD61D489E7C48BC46C9F875C1F04E1B
+Output: state = AddRoundKey(M, K)
+======================== VÒNG LẶP THỨ i, i = 1, 2, ..., 9 ===========
+7. Thay thế từng byte trong state bằng bảng S-box SubByte (tài liệu mục 5.3, trang 156)
+Input: state (kết quả bài 6 cho lần lặp 1 hoặc kết quả bài 10 cho lần lặp kế tiếp) = ,
+Sbox (tài liệu mục 5.3, Table 5.2, trang 157)
+Output: state = SubByte (state)
+8. Dịch vòng trái các byte trong state ShiftRows (tài liệu mục 5.3, trang 161)
+Input: state (kết quả bài 7) = ,
+Output: state = ShiftRows (state)
+9. Trộn các byte trong state MixColumns (tài liệu mục 5.3, trang 162)
+Input: state (kết quả bài 8) = ,
+Output: state = MixColumns (state)
+10. Dịch vòng trái các byte trong state AddRoundKey (tài liệu mục 5.3, trang 165)
+Input: state (kết quả bài 9) = ,
+Ki (kết quả bài 5) =
+Output: state = AddRoundKey (state, Ki)
+===================== VÒNG LẶP THỨ 10 ===========
+11. Vòng lặp cuối (lần lặp 10) (tài liệu mục 5.3, trang 165)
+Input: state (kết quả bài 10) = ,
+K10 (kết quả bài 5) =
+Output: C = state = AddRoundKey (ShiftRows(SubByte (state)), Ki)
+
+
+MÃ HÓA KHÓA CÔNG KHAI
+1. Trao đổi khóa Diffie-Hellman
+Giả sử An và Ba muốn trao đổi khoá phiên, họ đồng ý chọn số nguyên tố q = 7523
+và a = 5 (là căn nguyên thủy của q).
+An chọn khóa riêng xA = 387
+Ba chọn khóa riêng xB = 247
+Hãy cho biết
+a) Cách An tính ra khóa công khai yA và khóa phiên K? yA = K =
+b) Cách Ba tính ra khóa công khai yB và khóa phiên K? yB = K =
+2. Thuật toán RSA - Bài toán 1
+Giả sử An chọn các giá trị p = 47 , q = 71 , e = 61 để tạo cặp khóa.
+Hãy cho biết
+a) Khóa công khai của An: PU = {e, n} =
+b) cách An tạo ra khóa riêng: PR = {d, n} =
+c) Cách An tạo bản mã hóa thông điệp M = 59: C =
+d) Hãy cho biết cách người nhận giải mã bản mã C:
+e) Việc mã hóa ở câu c) thực hiện nhiệm vụ chữ ký số hay bảo mật.
+3. Thuật toán RSA - Bài toán 2:
+Giả sử An chọn các giá trị p = 47 , q = 71 , e = 61 để tạo cặp khóa.
+Hãy cho biết
+a) Khóa công khai của An: PU = {e, n} =
+b) Cách An tạo ra khóa riêng: PR = {d, n} =
+c) Cách người gửi (Ba) mã hóa thông điệp M = 59 để gửi cho An: C =
+d) Cách An giải mã bản mã C:
+e) Việc mã hóa ở câu c) thực hiện nhiệm vụ chữ ký số hay bảo mật.
+4. Mật mã ElGamal
+Giả sử An và Ba trao đổi bằng hệ mật mã ElGamal, có các giá trị chung là
+q = 7433 là một số nguyên tố, a = 3 là căn nguyên thủy của q.
+An chọn khóa riêng là xA = 341
+Hãy cho biết
+a) Khóa công khai của An: PU = {q, a, YA} với yA =
+b) Ba chọn số k = 872 để mã hóa bản tin M = 403 gửi cho An. Bản mã là (C1, C2) =
+c) Cách An giải bản mã (C1, C2)?
+5. CHỮ KÝ ĐIỆN TỬ DSA
+Giả sử An cần gửi cho Ba một bản tin M kèm chữ ký số, bản tin M có mã băm là H(M) =
+An và Ba thống nhất các giá trị: p = 47, q = 23, h = 34
+và An chọn xA = 2, k = 10
+Hãy cho biết
+a) Khóa công khai của An: yA =
+b) Chữ ký số của An cho bản tin M: (r, s) =
+c) Cách Ba xác minh chữ ký số được đính kèm với bản tin M?
+
