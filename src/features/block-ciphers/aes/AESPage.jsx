@@ -2,6 +2,8 @@ import React from 'react';
 import { useAES } from './hooks/useAES';
 import { FormGroup, ResultBox, VizPanel } from '../../../components/ui/SolverComponents';
 import { ErrorBoundary } from '../../../components/ui/ErrorBoundary';
+import { AESTimeTravelStepper } from './components/AESTimeTravelStepper';
+
 
 function HexMatrix({ mat, title, highlight=false }) {
   if (!mat) return null;
@@ -125,8 +127,18 @@ export default function AESPage() {
 
              </div>
           )}
+
+          {!error && result && (
+            <div className="mt-8">
+              <AESTimeTravelStepper 
+                plaintext={hexMessage} 
+                encryptionKey={hexKey} 
+              />
+            </div>
+          )}
         </div>
       </ErrorBoundary>
+
     </div>
   );
 }
