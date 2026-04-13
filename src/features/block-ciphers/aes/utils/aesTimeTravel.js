@@ -1,34 +1,22 @@
 import { SBOX, RCON } from './aesTables';
 
 /**
- * AES Time-Travel Stepper Utility
+ * AES Kinetic History Utility
  * 
  * DESIGN RATIONALE:
- * This utility runs a complete AES-128 encryption synchronously and captures 
- * every intermediate state into a "historyArray". 
- * 
- * DEEP CLONING STRATEGY:
- * To prevent reference mutation (where modifying a later state would overwrite
- * earlier ones in the history), we use JSON.parse(JSON.stringify(state)) 
- * for every push. This ensures that every entry in the history is a unique 
- * snapshot in memory of that specific algorithmic step.
- * 
- * STATE REPRESENTATION:
- * Internally, the state is a 1D array of 16 bytes.
- * Mapping to 2D Grid (Column-Major):
- * [ 0,  4,  8,  12 ]
- * [ 1,  5,  9,  13 ]
- * [ 2,  6,  10, 14 ]
- * [ 3,  7,  11, 15 ]
- * This matches the AES standard where bytes are filled column by column.
+ * This utility stores each step of AES as a "Transition".
+ * Instead of just snapshots, each entry contains:
+ * - prevState: The result of the PREVIOUS step.
+ * - operatorState: The "new" content (Round Key, S-Box results, etc.) that will "merge" into the result.
+ * - nextState: The final state after the merge.
  */
 
-// Helper: RotWord (used in Key Expansion)
+// Helper: RotWord
 function rotWord(word) {
     return [word[1], word[2], word[3], word[0]];
 }
 
-// Helper: SubWord (used in Key Expansion)
+// Helper: SubWord
 function subWord(word) {
     return word.map(b => SBOX[b]);
 }
@@ -59,7 +47,6 @@ export function expandKey(keyHex) {
         ]);
     }
 
-    // Flatten into round keys (16 bytes each)
     const roundKeys = [];
     for (let i = 0; i < 11; i++) {
         const rk = [];
@@ -78,19 +65,13 @@ function subBytes(state) {
 
 function shiftRows(state) {
     const next = [...state];
-    // Row 1: Shift left 1
     next[1] = state[1+4*0]; next[5] = state[1+4*1]; next[9] = state[1+4*2]; next[13] = state[1+4*3];
     const r1 = [next[1], next[5], next[9], next[13]];
     [next[1], next[5], next[9], next[13]] = [r1[1], r1[2], r1[3], r1[0]];
-    
-    // Row 2: Shift left 2
     const r2 = [state[2+4*0], state[2+4*1], state[2+4*2], state[2+4*3]];
     [next[2], next[6], next[10], next[14]] = [r2[2], r2[3], r2[0], r2[1]];
-    
-    // Row 3: Shift left 3
     const r3 = [state[3+4*0], state[3+4*1], state[3+4*2], state[3+4*3]];
     [next[3], next[7], next[11], next[15]] = [r3[3], r3[0], r3[1], r3[2]];
-    
     return next;
 }
 
@@ -123,18 +104,18 @@ function addRoundKey(state, key) {
 }
 
 /**
- * Generates the exhaustive history of AES encryption steps.
+ * Generates the history of AES transitions.
  */
 export function getAESHistory(plaintextHex, keyHex) {
     const history = [];
-    const push = (label, state, rKey, desc, isXorInput = false) => {
+    const push = (label, prevState, operatorState, nextState, desc, type) => {
         history.push({
             label,
-            // DEEP CLONE: Ensures each step is an immutable snapshot
-            state: JSON.parse(JSON.stringify(state)),
-            roundKey: rKey ? JSON.parse(JSON.stringify(rKey)) : null,
+            prevState: JSON.parse(JSON.stringify(prevState)),
+            operatorState: JSON.parse(JSON.stringify(operatorState)),
+            nextState: JSON.parse(JSON.stringify(nextState)),
             description: desc,
-            isXorInput
+            type // 'xor', 'sub', 'shift', 'mix', 'init'
         });
     };
 
@@ -143,35 +124,38 @@ export function getAESHistory(plaintextHex, keyHex) {
     for (let i = 0; i < 32; i += 2) state.push(parseInt(plaintextHex.substr(i, 2), 16));
     const roundKeys = expandKey(keyHex);
 
-    push("Initial State", state, null, "The 128-bit plaintext is loaded into a 4x4 matrix (column-major order).");
+    // Initial
+    push("Initial Alignment", [], state, state, "The 128-bit plaintext is prepared for the first alignment.", "init");
 
     // Pre-round (Round 0)
-    push("AddRoundKey - Input (R0)", state, roundKeys[0], "The current state is prepared to be XORed with the initial round key.", true);
-    state = addRoundKey(state, roundKeys[0]);
-    push("AddRoundKey - Result (R0)", state, roundKeys[0], "The initial round key has been XORed with the state.");
+    let next = addRoundKey(state, roundKeys[0]);
+    push("AddRoundKey (R0)", state, roundKeys[0], next, "The initial round key merges with the state via XOR.", "xor");
+    state = next;
 
     // Rounds 1 to 10
     for (let r = 1; r <= 10; r++) {
         // SubBytes
-        state = subBytes(state);
-        push(`SubBytes (R${r})`, state, null, "Each byte in the state is replaced with its entry in the Rijndael S-Box.");
+        next = subBytes(state);
+        push(`SubBytes (R${r})`, state, next, next, "S-Box substitutions are calculated and merged into the result.", "sub");
+        state = next;
 
         // ShiftRows
-        state = shiftRows(state);
-        push(`ShiftRows (R${r})`, state, null, "The last three rows of the state are shifted cyclically to the left by different offsets.");
+        next = shiftRows(state);
+        push(`ShiftRows (R${r})`, state, next, next, "The row shifts are calculated and merged into the result.", "shift");
+        state = next;
 
-        // MixColumns (Not in final round)
+        // MixColumns
         if (r < 10) {
-            state = mixColumns(state);
-            push(`MixColumns (R${r})`, state, null, "The four bytes of each column are combined using an invertible linear transformation.");
+            next = mixColumns(state);
+            push(`MixColumns (R${r})`, state, next, next, "The column mix transformations are calculated and merged into the result.", "mix");
+            state = next;
         }
 
         // AddRoundKey
-        push(`AddRoundKey - Input (R${r})`, state, roundKeys[r], `The current state is prepared to be XORed with the round ${r} key.`, true);
-        state = addRoundKey(state, roundKeys[r]);
-        push(`AddRoundKey - Result (R${r})`, state, roundKeys[r], `The round key for round ${r} has been XORed with the state.`);
+        next = addRoundKey(state, roundKeys[r]);
+        push(`AddRoundKey (R${r})`, state, roundKeys[r], next, `The round ${r} key merges with the state via XOR.`, "xor");
+        state = next;
     }
-
 
     return history;
 }

@@ -1,185 +1,232 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Play, Pause, RefreshCw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import { getAESHistory } from '../utils/aesTimeTravel';
 
 /**
- * AESTimeTravelStepper - An interactive visualizer for the AES-128 sub-steps.
+ * AESTimeTravelStepper - Kinetic Version
  * 
- * TECHNICAL BREAKDOWN:
- * 1. STATE BINDING: The slider input maps directly to the index of our historyArray.
- *    Changing the slider updates 'currentIndex', which triggers a re-render of the specific
- *    matrix state associated with that step.
- * 
- * 2. 1D to 2D MAPPING:
- *    The AES state is a 1D array of 16 bytes. To visualize this as a 4x4 matrix, we use 
- *    CSS Grid with 'grid-auto-flow: column'. This ensures that indices 0-3 are placed 
- *    in the first column, matching the mathematical representation.
- * 
- * 3. ANIMATION LOGIC:
- *    We use Framer Motion's 'layout' prop. Each byte is rendered in a <motion.div>
- *    with a 'layoutId' based on its original position in the plaintext (if we tracked it)
- *    or simply its value/position. For ShiftRows, the values change indices. Framer Motion
- *    detects the change in the DOM tree and performs a FLIP animation to slide the 
- *    elements to their new coordinates.
+ * KINETIC LOGIC:
+ * 1. Current Step Index: User moves the slider.
+ * 2. Phase 1 (0-1s): SHOWING_OPERATOR. 
+ *    - Left Box shows State(N-1). 
+ *    - Right Box pops up with the "Operator" (Key, Sub result, etc.).
+ * 3. Phase 2 (1-1.5s): MERGING.
+ *    - Right Box content physically glides into the Left Box coordinates.
+ * 4. Phase 3 (1.5s+): COMPLETED.
+ *    - Left Box updates to State(N).
+ *    - Right Box is empty or ready for next step.
  */
 
 export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDDEEFF", encryptionKey = "000102030405060708090A0B0C0D0E0F" }) {
   const history = useMemo(() => getAESHistory(plaintext, encryptionKey), [plaintext, encryptionKey]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [animationPhase, setAnimationPhase] = useState('showing_operator'); // 'showing_operator', 'merging', 'completed'
 
   const currentStep = history[currentIndex];
   const totalSteps = history.length;
+
+  useEffect(() => {
+    // Reset animation cycle on index change
+    setAnimationPhase('showing_operator');
+    
+    // Step 2: Begin merge after 1s
+    const mergeTimer = setTimeout(() => {
+      setAnimationPhase('merging');
+    }, 1000);
+
+    // Step 3: Complete merge after 0.5s of sliding
+    const completeTimer = setTimeout(() => {
+      setAnimationPhase('completed');
+    }, 1500);
+
+    return () => {
+      clearTimeout(mergeTimer);
+      clearTimeout(completeTimer);
+    };
+  }, [currentIndex]);
 
   const handleNext = () => setCurrentIndex(prev => Math.min(prev + 1, totalSteps - 1));
   const handlePrev = () => setCurrentIndex(prev => Math.max(prev - 1, 0));
 
   return (
-    <div className="bg-bg-card border border-border-subtle rounded-2xl p-6 shadow-xl space-y-8">
+    <div className="bg-bg-card border border-border-subtle rounded-2xl p-6 shadow-xl space-y-8 min-h-[600px]">
       {/* Header & Controls */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-          <h3 className="text-xl font-bold text-neon-cyan flex items-center gap-2">
-            AES-128 Time-Travel Stepper
+          <h3 className="text-xl font-bold text-neon-cyan flex items-center gap-2 uppercase tracking-tight">
+            Kinetic AES Engine
           </h3>
           <p className="text-sm text-text-secondary mt-1">
-            Scrub through every sub-step of the encryption process.
+            Watch transformations migrate from source to result.
           </p>
         </div>
         
         <div className="flex items-center gap-3 bg-bg-surface p-2 rounded-xl border border-white/5">
-          <button onClick={handlePrev} disabled={currentIndex === 0} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 transition-colors">
-            <ChevronLeft size={20} className="text-neon-cyan" />
+          <button onClick={handlePrev} disabled={currentIndex === 0} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 transition-colors text-neon-cyan">
+             <ChevronLeft size={20} />
           </button>
           <div className="text-sm font-mono font-bold text-text-primary px-4 border-x border-white/10">
             STEP {currentIndex + 1} / {totalSteps}
           </div>
-          <button onClick={handleNext} disabled={currentIndex === totalSteps - 1} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 transition-colors">
-            <ChevronRight size={20} className="text-neon-cyan" />
+          <button onClick={handleNext} disabled={currentIndex === totalSteps - 1} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 transition-colors text-neon-cyan">
+            <ChevronRight size={20} />
           </button>
         </div>
       </div>
 
-      {/* Main Visualization */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
         
-        {/* Matrix Area */}
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Kinetic Arena */}
+        <div className="space-y-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-16 relative">
             
-            {/* State Matrix */}
-            <div className="space-y-3 relative">
-              <span className="text-xs font-bold text-text-muted uppercase tracking-widest">State Matrix</span>
-              <div className={`grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border transition-all duration-500 shadow-inner grow-columns ${currentStep.isXorInput ? 'border-neon-cyan/50 shadow-[0_0_20px_rgba(0,240,255,0.1)]' : 'border-white/5'}`}>
-                {currentStep.state.map((byte, idx) => (
-                  <motion.div
-                    key={`state-${idx}`}
-                    layout
-                    className="flex items-center justify-center bg-bg-surface border border-neon-cyan/20 rounded-lg font-mono text-xs sm:text-sm md:text-base font-bold text-neon-cyan shadow-[0_0_10px_rgba(0,240,255,0.05)] aspect-square"
-                  >
-                    {byte.toString(16).padStart(2, '0').toUpperCase()}
-                  </motion.div>
-                ))}
+            {/* Box 1: ACCUMULATED RESULT */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-end px-1">
+                <span className="text-[10px] font-black text-neon-cyan uppercase tracking-[0.2em]">Result Box</span>
+                <span className="text-[9px] text-text-muted font-mono">{animationPhase === 'completed' ? 'UPDATED' : 'WAITING...'}</span>
               </div>
-
-              {/* XOR Symbol Connector */}
-              <AnimatePresence>
-                {currentStep.isXorInput && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.5, x: 20 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.5, x: -20 }}
-                    className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-bg-surface border border-white/20 flex items-center justify-center text-neon-cyan text-xl font-bold shadow-lg hidden sm:flex"
-                  >
-                    ⊕
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Round Key Matrix (If applicable) */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-text-muted uppercase tracking-widest">Round Key</span>
-              {currentStep.roundKey ? (
-                <div className={`grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border transition-all duration-500 shadow-inner grow-columns ${currentStep.isXorInput ? 'border-neon-gold/50 shadow-[0_0_20px_rgba(255,215,0,0.1)]' : 'border-neon-gold/10'}`}>
-                  {currentStep.roundKey.map((byte, idx) => (
-                    <motion.div
-                      key={`key-${idx}`}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex items-center justify-center bg-bg-surface border border-neon-gold/20 rounded-lg font-mono text-xs sm:text-sm md:text-base font-bold text-neon-gold aspect-square"
+              <div className="relative aspect-square p-2 bg-black/60 rounded-3xl border-2 border-neon-cyan/10 shadow-[inner_0_0_40px_rgba(0,0,0,0.8)] overflow-visible">
+                <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full grow-columns">
+                  {(animationPhase === 'completed' ? currentStep.nextState : currentStep.prevState).map((byte, idx) => (
+                    <div
+                      key={`res-${idx}`}
+                      className={`flex items-center justify-center rounded-xl font-mono text-sm md:text-base font-bold transition-all duration-300 ${animationPhase === 'completed' ? 'bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30' : 'bg-white/5 text-text-muted border border-white/10'}`}
                     >
                       {byte.toString(16).padStart(2, '0').toUpperCase()}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
-              ) : (
-                <div className="w-full aspect-square bg-white/5 rounded-2xl border border-white/5 flex items-center justify-center italic text-text-muted text-xs sm:text-sm text-center p-6">
-                  Not used in this step.
-                </div>
-              )}
+              </div>
             </div>
 
+            {/* Box 2: OPERATOR BOX (Everything Box) */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-end px-1">
+                <span className="text-[10px] font-black text-neon-gold uppercase tracking-[0.2em]">Operator Source</span>
+                <span className="text-[9px] text-neon-gold font-mono animate-pulse">{currentStep.type.toUpperCase()}</span>
+              </div>
+              <div className="relative aspect-square p-2 bg-black/60 rounded-3xl border-2 border-neon-gold/10 shadow-[inner_0_0_40px_rgba(0,0,0,0.8)]">
+                <AnimatePresence mode="wait">
+                  {animationPhase !== 'completed' && (
+                    <motion.div 
+                      key={`op-container-${currentIndex}`}
+                      className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full grow-columns"
+                      initial={{ opacity: 0, scale: 0.8, rotateY: 90 }}
+                      animate={{ 
+                        opacity: 1, 
+                        scale: 1, 
+                        rotateY: 0,
+                        x: animationPhase === 'merging' ? '-116%' : 0 // Shift to Left Box (Approx distance + gap)
+                      }}
+                      exit={{ opacity: 0, scale: 0.5 }}
+                      transition={{ 
+                         duration: animationPhase === 'merging' ? 0.5 : 0.4,
+                         ease: "easeInOut" 
+                      }}
+                    >
+                      {currentStep.operatorState.map((byte, idx) => (
+                        <motion.div
+                          key={`op-${idx}`}
+                          className="flex items-center justify-center bg-bg-surface border-2 border-neon-gold/40 rounded-xl font-mono text-sm md:text-base font-bold text-neon-gold shadow-[0_0_15px_rgba(255,215,0,0.1)]"
+                        >
+                          {byte.toString(16).padStart(2, '0').toUpperCase()}
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
+                {/* Status Indicator */}
+                {animationPhase === 'completed' && (
+                  <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    className="absolute inset-0 flex items-center justify-center text-neon-gold/20 font-black text-4xl italic select-none"
+                  >
+                    MERGED
+                  </motion.div>
+                )}
+              </div>
+            </div>
+
+            {/* Kinetic Bridge Arrow (Visible during merge) */}
+            <AnimatePresence>
+               {animationPhase === 'merging' && (
+                 <motion.div 
+                   initial={{ opacity: 0 }}
+                   animate={{ opacity: 1 }}
+                   exit={{ opacity: 0 }}
+                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
+                 >
+                   <div className="text-4xl text-neon-cyan animate-ping text-shadow-neon">⊕</div>
+                 </motion.div>
+               )}
+            </AnimatePresence>
           </div>
 
           {/* Slider */}
-          <div className="relative pt-6">
+          <div className="relative pt-12 pb-4">
             <input 
               type="range"
               min="0"
               max={totalSteps - 1}
               value={currentIndex}
               onChange={(e) => setCurrentIndex(parseInt(e.target.value))}
-              className="w-full h-2 bg-bg-surface rounded-lg appearance-none cursor-pointer accent-neon-cyan hover:accent-neon-cyan/80 transition-all border border-white/5"
+              className="w-full h-1.5 bg-bg-surface rounded-full appearance-none cursor-pointer accent-neon-cyan border border-white/5 active:scale-[1.01] transition-transform"
             />
-            <div className="grid grid-cols-3 mt-4 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-tighter">
-              <div className="text-left text-text-muted">
-                START <span className="hidden sm:inline block opacity-40 text-[8px]">PLAINTEXT</span>
-              </div>
-              <div className="text-center text-neon-cyan truncate px-2">
+            <div className="grid grid-cols-3 mt-6 text-[10px] font-mono font-bold tracking-[0.1em] uppercase">
+              <div className="text-text-muted">PLAINTEXT</div>
+              <div className="text-center bg-neon-cyan/10 text-neon-cyan py-1 px-3 rounded-full border border-neon-cyan/20 w-fit mx-auto min-w-[140px]">
                 {currentStep.label}
               </div>
-              <div className="text-right text-text-muted">
-                FINAL <span className="hidden sm:inline block opacity-40 text-[8px]">CIPHER</span>
-              </div>
+              <div className="text-right text-text-muted">CIPHERTEXT</div>
             </div>
           </div>
         </div>
 
-
-
-        {/* Sidebar: Step Details */}
-        <div className="flex flex-col gap-4">
-          <div className="bg-[#0f0f1e66] border border-border-subtle rounded-2xl p-5 h-full flex flex-col">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse"></div>
-              <h4 className="text-sm font-bold text-text-primary uppercase tracking-wide">Step Explanation</h4>
+        {/* Info Column */}
+        <div className="space-y-6">
+          <div className="bg-[#0f0f1e]/80 border border-white/5 rounded-3xl p-6 h-full flex flex-col backdrop-blur-md">
+            <div className="flex items-center gap-3 mb-6">
+              <div className={`w-3 h-3 rounded-full shadow-[0_0_10px] ${animationPhase === 'showing_operator' ? 'bg-neon-gold shadow-neon-gold animate-pulse' : 'bg-neon-cyan shadow-neon-cyan'}`}></div>
+              <h4 className="text-xs font-black text-text-primary uppercase tracking-widest italic">Process Terminal</h4>
             </div>
             
-            <div className="flex-1 space-y-4">
-              <div className="text-neon-cyan font-mono text-lg font-bold border-b border-white/5 pb-2">
-                {currentStep.label}
-              </div>
-              <p className="text-sm text-text-secondary leading-relaxed">
-                {currentStep.description}
-              </p>
-              
-              <div className="pt-4 space-y-3">
-                <div className="p-3 bg-white/5 rounded-lg border border-white/5">
-                  <span className="text-[10px] font-bold text-text-muted block mb-1">ALGORITHM PHASE</span>
-                  <span className="text-xs font-mono text-text-primary">
-                    {currentIndex === 0 ? 'Initialization' : currentIndex === totalSteps - 1 ? 'Final State' : 'Round Processing'}
-                  </span>
-                </div>
-              </div>
+            <div className="flex-1 space-y-6">
+               <div>
+                  <div className="text-neon-cyan font-mono text-xl font-black mb-2 flex items-baseline gap-2">
+                    <span className="text-xs opacity-40">STEP_</span>{currentStep.label}
+                  </div>
+                  <div className="h-0.5 w-12 bg-neon-cyan/30 rounded-full mb-4"></div>
+                  <p className="text-xs text-text-secondary leading-relaxed font-medium">
+                    {currentStep.description}
+                  </p>
+               </div>
+
+               <div className="space-y-4">
+                  <div className="p-4 bg-white/5 rounded-2xl border border-white/5 group hover:border-neon-cyan/30 transition-colors">
+                    <span className="text-[9px] font-black text-text-muted block mb-2 uppercase tracking-wider">Current Operation</span>
+                    <span className="text-xs font-mono text-neon-gold">{currentStep.type.toUpperCase()}</span>
+                  </div>
+                  
+                  <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                    <span className="text-[9px] font-black text-text-muted block mb-2 uppercase tracking-wider">Status Log</span>
+                    <span className="text-[10px] font-mono text-text-primary uppercase">
+                       {animationPhase === 'showing_operator' && '> LOADING_SOURCE...'}
+                       {animationPhase === 'merging' && '> MERGING_TRANSFORM...'}
+                       {animationPhase === 'completed' && '> COMPUTE_FINALIZED.'}
+                    </span>
+                  </div>
+               </div>
             </div>
 
             <button 
               onClick={() => setCurrentIndex(0)}
-              className="mt-6 flex items-center justify-center gap-2 py-3 bg-bg-surface border border-white/5 hover:border-neon-cyan/30 hover:bg-neon-cyan/5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all"
+              className="mt-8 flex items-center justify-center gap-3 py-4 bg-bg-surface border border-white/5 hover:border-neon-cyan/50 hover:bg-neon-cyan/5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all"
             >
-              <RefreshCw size={14} /> RESET STEPS
+              <RefreshCw size={14} /> REBOOT SEQUENCE
             </button>
           </div>
         </div>
@@ -189,6 +236,9 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
       <style>{`
         .grow-columns {
             grid-auto-flow: column;
+        }
+        .text-shadow-neon {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
         }
       `}</style>
     </div>
