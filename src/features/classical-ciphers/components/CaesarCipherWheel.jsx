@@ -79,15 +79,11 @@ export function CaesarCipherWheel({ k = 0 }) {
           </g>
 
           {/* INNER RING: ROTATING CIPHERTEXT ALPHABET */}
-          {/* 
-              TECHNICAL NOTE: We apply CSS transition to the entire group <g>.
-              When 'k' changes, the group rotates smoothly around the center (cx, cy).
-          */}
           <motion.g 
             id="ciphertext-ring"
             animate={{ rotate: rotationDegrees }}
             transition={{ type: "spring", stiffness: 60, damping: 15 }}
-            style={{ originX: `${cx}px`, originY: `${cy}px` }}
+            style={{ originX: cx, originY: cy }}
           >
              {ALPHABET.map((char, i) => {
               const { x, y, rotate } = getCoords(i, innerR);
@@ -107,9 +103,14 @@ export function CaesarCipherWheel({ k = 0 }) {
             })}
           </motion.g>
 
-          {/* DECORATIVE CENTER HUB */}
-          <circle cx={cx} cy={cy} r="10" className="fill-neon-cyan shadow-lg" />
-          <circle cx={cx} cy={cy} r="40" className="fill-transparent stroke-neon-cyan/10 stroke-dasharray-[2,4]" />
+          {/* DECORATIVE CENTER HUB & OVERLAY TEXT */}
+          <g id="center-hub">
+            <circle cx={cx} cy={cy} r="10" className="fill-neon-cyan shadow-lg" />
+            <circle cx={cx} cy={cy} r="40" className="fill-transparent stroke-neon-cyan/10 stroke-dasharray-[2,4]" />
+            
+            <text x={cx} y={cy - 15} textAnchor="middle" className="fill-text-muted font-black text-[10px] uppercase tracking-[0.2em] select-none">SHIFT</text>
+            <text x={cx} y={cy + 15} textAnchor="middle" dominantBaseline="middle" className="fill-neon-cyan font-mono text-4xl font-black select-none">{k}</text>
+          </g>
           
           {/* ALIGNMENT INDICATOR (THE "NEEDLE") */}
           <line 
@@ -118,15 +119,10 @@ export function CaesarCipherWheel({ k = 0 }) {
             className="stroke-neon-gold/50 stroke-1 stroke-dasharray-[2,2]" 
           />
         </svg>
-
-        {/* OVERLAY KEY DISPLAY */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-          <div className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">SHIFT</div>
-          <div className="text-4xl font-black text-neon-cyan font-mono leading-none">{k}</div>
-        </div>
       </div>
 
       <div className="mt-6 flex flex-col items-center gap-2">
+
         <div className="flex items-center gap-8 px-6 py-2 bg-black/40 border border-white/5 rounded-full shadow-inner">
            <div className="flex flex-col items-center">
               <span className="text-[9px] font-black text-text-muted uppercase">Plaintext</span>
