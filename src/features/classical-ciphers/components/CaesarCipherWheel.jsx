@@ -83,8 +83,9 @@ export function CaesarCipherWheel({ k = 0 }) {
             id="ciphertext-ring"
             animate={{ rotate: rotationDegrees }}
             transition={{ type: "spring", stiffness: 60, damping: 15 }}
-            style={{ originX: cx, originY: cy }}
+            style={{ originX: 0.5, originY: 0.5 }}
           >
+
              {ALPHABET.map((char, i) => {
               const { x, y, rotate } = getCoords(i, innerR);
               return (
