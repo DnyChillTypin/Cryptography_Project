@@ -106,12 +106,10 @@ export function CaesarCipherWheel({ k = 0 }) {
 
           {/* DECORATIVE CENTER HUB & OVERLAY TEXT */}
           <g id="center-hub">
-            <circle cx={cx} cy={cy} r="10" className="fill-neon-cyan shadow-lg" />
-            <circle cx={cx} cy={cy} r="40" className="fill-transparent stroke-neon-cyan/10 stroke-dasharray-[2,4]" />
-            
             <text x={cx} y={cy - 15} textAnchor="middle" className="fill-text-muted font-black text-[10px] uppercase tracking-[0.2em] select-none">SHIFT</text>
             <text x={cx} y={cy + 15} textAnchor="middle" dominantBaseline="middle" className="fill-neon-cyan font-mono text-4xl font-black select-none">{k}</text>
           </g>
+
           
           {/* ALIGNMENT INDICATOR (THE "NEEDLE") */}
           <line 
