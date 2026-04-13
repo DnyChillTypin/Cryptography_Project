@@ -126,7 +126,8 @@ export default function AESPage() {
                </VizPanel>
 
              </div>
-        </div>
+           )}
+         </div>
 
           {!error && result && (
             <div className="mt-12">
