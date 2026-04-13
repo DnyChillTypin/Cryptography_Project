@@ -98,8 +98,10 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
                         opacity: 1, 
                         scale: 1, 
                         rotateY: 0,
-                        x: animationPhase === 'merging' ? 'calc(100% + 4rem)' : 0 // 4rem is the gap-16
+                        // Displacement = 100% (width) + 4rem (gap) + 20px (padding/borders of both boxes)
+                        x: animationPhase === 'merging' ? 'calc(100% + 4rem + 20px)' : 0 
                       }}
+
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ 
                          duration: animationPhase === 'merging' ? 0.4 : 0.4,
