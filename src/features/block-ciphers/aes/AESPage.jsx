@@ -126,17 +126,16 @@ export default function AESPage() {
                </VizPanel>
 
              </div>
-          )}
+        </div>
 
           {!error && result && (
-            <div className="mt-8">
+            <div className="mt-12">
               <AESTimeTravelStepper 
                 plaintext={hexMessage} 
                 encryptionKey={hexKey} 
               />
             </div>
           )}
-        </div>
       </ErrorBoundary>
 
     </div>

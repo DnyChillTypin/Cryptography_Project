@@ -70,12 +70,12 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
             {/* State Matrix */}
             <div className="space-y-3">
               <span className="text-xs font-bold text-text-muted uppercase tracking-widest">State Matrix</span>
-              <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full max-w-[280px] p-3 bg-black/40 rounded-2xl border border-white/5 shadow-inner grow-columns mx-auto sm:mx-0">
+              <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border border-white/5 shadow-inner grow-columns">
                 {currentStep.state.map((byte, idx) => (
                   <motion.div
                     key={`state-${idx}`}
                     layout
-                    className="flex items-center justify-center bg-bg-surface border border-neon-cyan/20 rounded-lg font-mono text-sm sm:text-base font-bold text-neon-cyan shadow-[0_0_10px_rgba(0,240,255,0.05)] aspect-square h-auto"
+                    className="flex items-center justify-center bg-bg-surface border border-neon-cyan/20 rounded-lg font-mono text-xs sm:text-sm md:text-base font-bold text-neon-cyan shadow-[0_0_10px_rgba(0,240,255,0.05)] aspect-square"
                   >
                     {byte.toString(16).padStart(2, '0').toUpperCase()}
                   </motion.div>
@@ -87,21 +87,21 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
             <div className="space-y-3">
               <span className="text-xs font-bold text-text-muted uppercase tracking-widest">Round Key</span>
               {currentStep.roundKey ? (
-                <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full max-w-[280px] p-3 bg-black/40 rounded-2xl border border-neon-gold/10 shadow-inner grow-columns mx-auto sm:mx-0">
+                <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border border-neon-gold/10 shadow-inner grow-columns">
                   {currentStep.roundKey.map((byte, idx) => (
                     <motion.div
                       key={`key-${idx}`}
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="flex items-center justify-center bg-bg-surface border border-neon-gold/20 rounded-lg font-mono text-sm sm:text-base font-bold text-neon-gold aspect-square h-auto"
+                      className="flex items-center justify-center bg-bg-surface border border-neon-gold/20 rounded-lg font-mono text-xs sm:text-sm md:text-base font-bold text-neon-gold aspect-square"
                     >
                       {byte.toString(16).padStart(2, '0').toUpperCase()}
                     </motion.div>
                   ))}
                 </div>
               ) : (
-                <div className="w-full max-w-[280px] aspect-square bg-white/5 rounded-2xl border border-white/5 flex items-center justify-center italic text-text-muted text-sm text-center p-6 mx-auto sm:mx-0">
-                  Not used in this transformation step.
+                <div className="w-full aspect-square bg-white/5 rounded-2xl border border-white/5 flex items-center justify-center italic text-text-muted text-xs sm:text-sm text-center p-6">
+                  Not used in this step.
                 </div>
               )}
             </div>
@@ -116,23 +116,22 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
               max={totalSteps - 1}
               value={currentIndex}
               onChange={(e) => setCurrentIndex(parseInt(e.target.value))}
-              className="w-full h-2 bg-bg-surface rounded-lg appearance-none cursor-pointer accent-neon-cyan hover:accent-neon-cyan/80 transition-all border border-white/5 overflow-hidden"
+              className="w-full h-2 bg-bg-surface rounded-lg appearance-none cursor-pointer accent-neon-cyan hover:accent-neon-cyan/80 transition-all border border-white/5"
             />
-            <div className="flex justify-between mt-4 text-[9px] font-mono font-bold text-text-muted uppercase tracking-tighter relative h-8">
-              <div className="absolute left-0 top-0 w-24">
-                <div className="text-text-muted">START</div>
-                <div className="text-[8px] opacity-40">PLAINTEXT</div>
+            <div className="grid grid-cols-3 mt-4 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-tighter">
+              <div className="text-left text-text-muted">
+                START <span className="hidden sm:inline block opacity-40 text-[8px]">PLAINTEXT</span>
               </div>
-              <div className="absolute left-1/2 -translate-x-1/2 top-0 text-center w-full max-w-[120px]">
-                <div className="text-neon-cyan whitespace-nowrap overflow-hidden text-ellipsis">{currentStep.label}</div>
+              <div className="text-center text-neon-cyan truncate px-2">
+                {currentStep.label}
               </div>
-              <div className="absolute right-0 top-0 text-right w-24">
-                <div className="text-text-muted">FINAL</div>
-                <div className="text-[8px] opacity-40">CIPHERTEXT</div>
+              <div className="text-right text-text-muted">
+                FINAL <span className="hidden sm:inline block opacity-40 text-[8px]">CIPHER</span>
               </div>
             </div>
           </div>
         </div>
+
 
 
         {/* Sidebar: Step Details */}
