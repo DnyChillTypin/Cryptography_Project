@@ -51,7 +51,7 @@ export function ResultBox({ label = "Ciphertext", value, warning }) {
       )}
     </div>
   );
-}
+
 
 export function VizPanel({ title, description, children }) {
   return (

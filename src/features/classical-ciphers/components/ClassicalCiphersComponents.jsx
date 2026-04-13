@@ -5,6 +5,7 @@ import {
   useCaesarCipher, useVigenereRepeating, useVigenereAutokey, 
   useMonoalphabetic, usePlayfair, usePermutation 
 } from '../hooks/useClassicalCiphers';
+import { CaesarCipherWheel } from './CaesarCipherWheel';
 import { A, mod } from '../utils/cryptoMath';
 
 export function CaesarSolver() {
@@ -12,30 +13,43 @@ export function CaesarSolver() {
 
   return (
     <SolverDashboard title="Caesar Cipher" number="1" subtitle="Single-alphabet shift cipher. C = (P + K) mod 26.">
-      <>
+      <div className="flex flex-col gap-6">
         <FormGroup label="Plain Text" value={plain} onChange={e => setPlain(e.target.value)} />
         <FormGroup label="Key (Shift)" value={key} onChange={e => setKey(e.target.value)} type="number" />
         <ResultBox value={cipher} />
-      </>
-      <>
-        <VizPanel title="Encryption System" description={`Formula: C = (P + K) mod 26, where K = ${k}`}>
-          <table className="w-full text-left text-[14px] font-mono border-collapse">
-            <thead>
-              <tr className="border-b border-border-medium">
-                <th className="py-2 text-text-secondary font-bold pr-4 border-r border-border-subtle">Plain</th>
-                {A.split('').map(c => <th key={c} className="px-2 py-2 text-center text-text-primary font-bold">{c}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="py-2 text-neon-gold font-semibold pr-4 border-r border-border-subtle">Cipher</td>
-                {A.split('').map((c, i) => <td key={c} className="px-2 py-2 text-center text-neon-gold font-bold">{A[mod(i+k, 26)]}</td>)}
-              </tr>
-            </tbody>
-          </table>
-        </VizPanel>
+        
         <FrequencyChart plain={plain} cipher={cipher} />
-      </>
+      </div>
+      
+      <div className="flex flex-col gap-6">
+        <VizPanel 
+          title="Interactive Cipher Disk" 
+          description={`Formula: C = (P + ${k}) mod 26. The inner ring shifts ${k} positions.`}
+        >
+          <div className="flex justify-center py-4">
+            <CaesarCipherWheel k={k} />
+          </div>
+        </VizPanel>
+
+        <VizPanel title="Mapping Table" description="Quick reference for current shift.">
+          <div className="overflow-x-auto custom-scrollbar pb-2">
+            <table className="w-full text-left text-[11px] font-mono border-collapse min-w-[600px]">
+              <thead>
+                <tr className="border-b border-border-medium">
+                  <th className="py-2 text-text-secondary font-bold pr-4 border-r border-border-subtle">Plain</th>
+                  {A.split('').map(c => <th key={c} className="px-1 py-1 text-center text-text-primary font-bold">{c}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="py-2 text-neon-cyan font-semibold pr-4 border-r border-border-subtle uppercase">Cipher</td>
+                  {A.split('').map((c, i) => <td key={c} className="px-1 py-1 text-center text-neon-cyan font-bold">{A[mod(i+k, 26)]}</td>)}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </VizPanel>
+      </div>
     </SolverDashboard>
   );
 }
