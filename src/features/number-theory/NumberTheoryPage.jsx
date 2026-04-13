@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-  FastPoweringSolver, ExtendedEuclideanSolver, FermatLittleSolver,
-  TotientSolver, EulersTheoremSolver, CRTExpSolver, CRTSystemSolver,
-  PrimitiveRootSolver, DiscreteLogSolver, BasicModuloSolver
+  PrimitiveRootSolver, DiscreteLogSolver, BasicModuloSolver, ModularOrbitSolver
 } from './components/NumberTheoryComponents';
 
 export default function NumberTheoryPage() {
@@ -31,6 +29,7 @@ export default function NumberTheoryPage() {
         <PrimitiveRootSolver />
         <DiscreteLogSolver />
         <BasicModuloSolver />
+        <ModularOrbitSolver />
       </div>
     </div>
   );

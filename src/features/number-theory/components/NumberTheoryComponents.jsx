@@ -8,6 +8,7 @@ import {
   useEulersTheorem, useCRTExp, useCRTSystem, usePrimitiveRoot,
   useDiscreteLog, useBasicModulo
 } from '../hooks/useNumberTheory';
+import { ModularOrbitViz } from './ModularOrbitViz';
 
 export function FastPoweringSolver() {
   const { base, setBase, exp, setExp, mod, setMod, result, steps, error } = useFastPowering();
@@ -402,6 +403,37 @@ export function BasicModuloSolver() {
              </div>
           </VizPanel>
         )}
+        </>
+      </SolverDashboard>
+    </ErrorBoundary>
+  );
+}
+ 
+export function ModularOrbitSolver() {
+  const [a, setA] = useState('11');
+  const [n, setN] = useState('293');
+
+  return (
+    <ErrorBoundary>
+      <SolverDashboard title="Modular Arithmetic Orbits" number="11" subtitle="Visualizing multiplicative groups and primitive roots.">
+        <>
+          <div className="grid grid-cols-2 gap-4">
+             <FormGroup label="a (base)" value={a} onChange={e=>setA(e.target.value)} type="number" />
+             <FormGroup label="n (modulus)" value={n} onChange={e=>setN(e.target.value)} type="number" />
+          </div>
+          <div className="mt-4 p-4 bg-black/20 rounded-xl border border-border-subtle">
+             <div className="text-xs font-bold text-neon-cyan uppercase mb-2 tracking-widest">Orbit Logic</div>
+             <p className="text-xs text-text-secondary leading-relaxed">
+                This tool maps residues to points on a circle. The resulting geometric pattern (or "web") illustrates the cyclic properties of modular powers. If $a$ is a primitive root, the web will be maximally dense.
+             </p>
+          </div>
+        </>
+        <>
+          <VizPanel title="Geometric Subgroup Trace" description={`Path: ${a}^m mod ${n} as m increases.`}>
+             <div className="flex justify-center py-4">
+                <ModularOrbitViz a={parseInt(a) || 1} n={parseInt(n) || 1} />
+             </div>
+          </VizPanel>
         </>
       </SolverDashboard>
     </ErrorBoundary>
