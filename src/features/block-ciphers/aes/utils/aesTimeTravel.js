@@ -127,13 +127,14 @@ function addRoundKey(state, key) {
  */
 export function getAESHistory(plaintextHex, keyHex) {
     const history = [];
-    const push = (label, state, rKey, desc) => {
+    const push = (label, state, rKey, desc, isXorInput = false) => {
         history.push({
             label,
             // DEEP CLONE: Ensures each step is an immutable snapshot
             state: JSON.parse(JSON.stringify(state)),
             roundKey: rKey ? JSON.parse(JSON.stringify(rKey)) : null,
-            description: desc
+            description: desc,
+            isXorInput
         });
     };
 
@@ -145,8 +146,9 @@ export function getAESHistory(plaintextHex, keyHex) {
     push("Initial State", state, null, "The 128-bit plaintext is loaded into a 4x4 matrix (column-major order).");
 
     // Pre-round (Round 0)
+    push("AddRoundKey - Input (R0)", state, roundKeys[0], "The current state is prepared to be XORed with the initial round key.", true);
     state = addRoundKey(state, roundKeys[0]);
-    push("AddRoundKey (R0)", state, roundKeys[0], "The initial round key is XORed with the state.");
+    push("AddRoundKey - Result (R0)", state, roundKeys[0], "The initial round key has been XORed with the state.");
 
     // Rounds 1 to 10
     for (let r = 1; r <= 10; r++) {
@@ -165,9 +167,11 @@ export function getAESHistory(plaintextHex, keyHex) {
         }
 
         // AddRoundKey
+        push(`AddRoundKey - Input (R${r})`, state, roundKeys[r], `The current state is prepared to be XORed with the round ${r} key.`, true);
         state = addRoundKey(state, roundKeys[r]);
-        push(`AddRoundKey (R${r})`, state, roundKeys[r], `The round key for round ${r} is XORed with the state.`);
+        push(`AddRoundKey - Result (R${r})`, state, roundKeys[r], `The round key for round ${r} has been XORed with the state.`);
     }
+
 
     return history;
 }

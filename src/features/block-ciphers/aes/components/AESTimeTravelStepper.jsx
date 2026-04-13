@@ -68,9 +68,9 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             
             {/* State Matrix */}
-            <div className="space-y-3">
+            <div className="space-y-3 relative">
               <span className="text-xs font-bold text-text-muted uppercase tracking-widest">State Matrix</span>
-              <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border border-white/5 shadow-inner grow-columns">
+              <div className={`grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border transition-all duration-500 shadow-inner grow-columns ${currentStep.isXorInput ? 'border-neon-cyan/50 shadow-[0_0_20px_rgba(0,240,255,0.1)]' : 'border-white/5'}`}>
                 {currentStep.state.map((byte, idx) => (
                   <motion.div
                     key={`state-${idx}`}
@@ -81,13 +81,27 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
                   </motion.div>
                 ))}
               </div>
+
+              {/* XOR Symbol Connector */}
+              <AnimatePresence>
+                {currentStep.isXorInput && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.5, x: 20 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.5, x: -20 }}
+                    className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-bg-surface border border-white/20 flex items-center justify-center text-neon-cyan text-xl font-bold shadow-lg hidden sm:flex"
+                  >
+                    ⊕
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Round Key Matrix (If applicable) */}
             <div className="space-y-3">
               <span className="text-xs font-bold text-text-muted uppercase tracking-widest">Round Key</span>
               {currentStep.roundKey ? (
-                <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border border-neon-gold/10 shadow-inner grow-columns">
+                <div className={`grid grid-cols-4 grid-rows-4 gap-2 w-full p-2 bg-black/40 rounded-2xl border transition-all duration-500 shadow-inner grow-columns ${currentStep.isXorInput ? 'border-neon-gold/50 shadow-[0_0_20px_rgba(255,215,0,0.1)]' : 'border-neon-gold/10'}`}>
                   {currentStep.roundKey.map((byte, idx) => (
                     <motion.div
                       key={`key-${idx}`}
@@ -105,6 +119,7 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
                 </div>
               )}
             </div>
+
 
           </div>
 
