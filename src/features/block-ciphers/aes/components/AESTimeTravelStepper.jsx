@@ -81,27 +81,7 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
         <div className="space-y-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-16 relative">
             
-            {/* Box 1: ACCUMULATED RESULT */}
-            <div className="space-y-4">
-              <div className="flex justify-between items-end px-1">
-                <span className="text-[10px] font-black text-neon-cyan uppercase tracking-[0.2em]">Result Box</span>
-                <span className="text-[9px] text-text-muted font-mono">{animationPhase === 'completed' ? 'UPDATED' : 'WAITING...'}</span>
-              </div>
-              <div className="relative aspect-square p-2 bg-black/60 rounded-3xl border-2 border-neon-cyan/10 shadow-[inner_0_0_40px_rgba(0,0,0,0.8)] overflow-visible">
-                <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full grow-columns">
-                  {(animationPhase === 'completed' ? currentStep.nextState : currentStep.prevState).map((byte, idx) => (
-                    <div
-                      key={`res-${idx}`}
-                      className={`flex items-center justify-center rounded-xl font-mono text-sm md:text-base font-bold transition-all duration-300 ${animationPhase === 'completed' ? 'bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30' : 'bg-white/5 text-text-muted border border-white/10'}`}
-                    >
-                      {byte.toString(16).padStart(2, '0').toUpperCase()}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Box 2: OPERATOR BOX (Everything Box) */}
+            {/* Box 1: OPERATOR SOURCE (Now on Left) */}
             <div className="space-y-4">
               <div className="flex justify-between items-end px-1">
                 <span className="text-[10px] font-black text-neon-gold uppercase tracking-[0.2em]">Operator Source</span>
@@ -113,23 +93,23 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
                     <motion.div 
                       key={`op-container-${currentIndex}`}
                       className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full grow-columns"
-                      initial={{ opacity: 0, scale: 0.8, rotateY: 90 }}
+                      initial={{ opacity: 0, scale: 0.8, rotateY: -90 }}
                       animate={{ 
                         opacity: 1, 
                         scale: 1, 
                         rotateY: 0,
-                        x: animationPhase === 'merging' ? '-116%' : 0 // Shift to Left Box (Approx distance + gap)
+                        x: animationPhase === 'merging' ? 'calc(100% + 4rem)' : 0 // 4rem is the gap-16
                       }}
-                      exit={{ opacity: 0, scale: 0.5 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ 
-                         duration: animationPhase === 'merging' ? 0.5 : 0.4,
-                         ease: "easeInOut" 
+                         duration: animationPhase === 'merging' ? 0.4 : 0.4,
+                         ease: animationPhase === 'merging' ? "circIn" : "easeOut"
                       }}
                     >
                       {currentStep.operatorState.map((byte, idx) => (
                         <motion.div
                           key={`op-${idx}`}
-                          className="flex items-center justify-center bg-bg-surface border-2 border-neon-gold/40 rounded-xl font-mono text-sm md:text-base font-bold text-neon-gold shadow-[0_0_15px_rgba(255,215,0,0.1)]"
+                          className="flex items-center justify-center bg-bg-surface border-2 border-neon-gold/40 rounded-xl font-mono text-xs sm:text-sm md:text-base font-bold text-neon-gold shadow-[0_0_15px_rgba(255,215,0,0.1)]"
                         >
                           {byte.toString(16).padStart(2, '0').toUpperCase()}
                         </motion.div>
@@ -143,11 +123,31 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
                   <motion.div 
                     initial={{ opacity: 0 }} 
                     animate={{ opacity: 1 }} 
-                    className="absolute inset-0 flex items-center justify-center text-neon-gold/20 font-black text-4xl italic select-none"
+                    className="absolute inset-0 flex items-center justify-center text-neon-gold/10 font-black text-4xl italic select-none"
                   >
                     MERGED
                   </motion.div>
                 )}
+              </div>
+            </div>
+
+            {/* Box 2: ACCUMULATED RESULT (Now on Right) */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-end px-1">
+                <span className="text-[10px] font-black text-neon-cyan uppercase tracking-[0.2em]">Result Box</span>
+                <span className="text-[9px] text-text-muted font-mono">{animationPhase === 'completed' ? 'UPDATED' : 'WAITING...'}</span>
+              </div>
+              <div className="relative aspect-square p-2 bg-black/60 rounded-3xl border-2 border-neon-cyan/20 shadow-[inner_0_0_40px_rgba(0,0,0,0.8)] overflow-visible">
+                <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full grow-columns">
+                  {(animationPhase === 'completed' ? currentStep.nextState : currentStep.prevState).map((byte, idx) => (
+                    <div
+                      key={`res-${idx}`}
+                      className={`flex items-center justify-center rounded-xl font-mono text-xs sm:text-sm md:text-base font-bold transition-all duration-300 ${animationPhase === 'completed' ? 'bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/40 scale-[1.05]' : 'bg-white/5 text-text-muted border border-white/10'}`}
+                    >
+                      {byte.toString(16).padStart(2, '0').toUpperCase()}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -160,11 +160,12 @@ export function AESTimeTravelStepper({ plaintext = "00112233445566778899AABBCCDD
                    exit={{ opacity: 0 }}
                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
                  >
-                   <div className="text-4xl text-neon-cyan animate-ping text-shadow-neon">⊕</div>
+                   <div className="text-4xl text-neon-cyan animate-pulse text-shadow-neon">➔</div>
                  </motion.div>
                )}
             </AnimatePresence>
           </div>
+
 
           {/* Slider */}
           <div className="relative pt-12 pb-4">
